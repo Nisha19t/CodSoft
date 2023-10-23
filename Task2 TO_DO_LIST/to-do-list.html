@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="todolist.css">
+    <title>To-Do List App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <div class="inputs">
+            <input type="text" id="task" placeholder="Enter your task">
+            <button onclick="addTask()">Add</button>
+        </div>
+        <ul id="taskList"></ul>
+    </div>
+    <script > const taskInput = document.getElementById("task");
+        const taskList = document.getElementById("taskList");
+        
+        // Load tasks from local storage on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.forEach((task, index) => addTaskToList(task, index));
+        });
+        
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            if (taskText === "") {R
+                alert("Please enter a task.");
+                return;
+            }
+        
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.push(taskText);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        
+            addTaskToList(taskText, tasks.length - 1);
+            taskInput.value = "";
+        }
+        
+        function addTaskToList(taskText, index) {
+            const taskItem = document.createElement("li");
+            taskItem.innerHTML = `
+                <span>${taskText}</span>
+                <button onclick="editTask(${index})">Edit</button>
+                <button onclick="deleteTask(${index})">Delete</button>
+            `;
+            taskList.appendChild(taskItem);
+        }
+        
+        function editTask(index) {
+            const tasks = JSON.parse(localStorage.getItem("tasks"));
+            const updatedTaskText = prompt("Edit task:", tasks[index]);
+            if (updatedTaskText !== null) {
+                tasks[index] = updatedTaskText;
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                const taskItem = taskList.children[index];
+                taskItem.querySelector("span").textContent = updatedTaskText;
+            }
+        }
+        
+        function deleteTask(index) {
+            const tasks = JSON.parse(localStorage.getItem("tasks"));
+            tasks.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            taskList.children[index].remove();
+        }
+        </script>
+</body>
+</html>
